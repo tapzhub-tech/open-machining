@@ -1,0 +1,207 @@
+[
+    {
+      "id": "cnc-machining",
+      "slug": "cnc-machining",
+      "name": "CNC Machining",
+      "description": "Precision-engineered components with rapid manufacturing solutions.",
+      "bullets": [
+        "Tolerance up to ±0.0003 inches",
+        "Prototypes and full-scale production",
+        "Fast turnaround times"
+      ],
+      "image": "/assets/capabilities/card-17.png"
+    },
+    {
+      "id": "cnc-milling",
+      "slug": "cnc-milling",
+      "name": "CNC Milling",
+      "description": "Complex components with exceptional precision, as fast as 1 day.",
+      "bullets": [
+        "Tolerance up to ±0.008 mm",
+        "Prototype to production",
+        "Rapid delivery"
+      ],
+      "image": "/assets/capabilities/card-15.png"
+    },
+    {
+      "id": "cnc-turning",
+      "slug": "cnc-turning",
+      "name": "CNC Turning",
+      "description": "High-precision CNC turning services delivering complex cylindrical parts with rapid turnaround.",
+      "bullets": [
+        "Tolerances as tight as ±0.005 mm",
+        "Custom prototyping and mass production",
+        "Delivery starting from 24 hours"
+      ],
+      "image": "/assets/capabilities/card-14.png"
+    },
+    {
+      "id": "5-axis-cnc-machining",
+      "slug": "5-axis-cnc-machining",
+      "name": "5 Axis CNC Machining",
+      "description": "High-precision 5-axis CNC machining for intricate components with fast lead times.",
+      "bullets": [
+        "Precision tolerances up to ±0.002 mm",
+        "Complex geometries in a single setup",
+        "Standard lead time 2–3 days"
+      ],
+      "image": "/assets/capabilities/card-13.png"
+    },
+    {
+      "id": "3d-printing",
+      "slug": "3d-printing",
+      "name": "3D Printing",
+      "description": "Cost-effective 3D printing for rapid prototyping and low-volume production.",
+      "bullets": [
+        "Accuracy up to ±0.2 mm",
+        "Wide range of plastics and metals",
+        "No tooling cost"
+      ],
+      "image": "/assets/capabilities/card-05.png"
+    },
+    {
+      "id": "laser-cutting",
+      "slug": "laser-cutting",
+      "name": "Laser Cutting",
+      "description": "Precision laser cutting solutions for intricate designs and rapid manufacturing.",
+      "bullets": [
+        "Tolerances up to ±0.002 inches",
+        "Prototype and high-volume production",
+        "Fast turnaround in 3–5 days"
+      ],
+      "image": "/assets/capabilities/card-07.png"
+    },
+    {
+      "id": "metal-bending",
+      "slug": "metal-bending",
+      "name": "Metal Bending",
+      "description": "High-quality metal bending services for complex designs and fast delivery.",
+      "bullets": [
+        "Tolerances up to ±0.01 mm",
+        "Wide range of materials",
+        "Delivery in 3–5 days"
+      ],
+      "image": "/assets/capabilities/card-06.png"
+    },
+    {
+      "id": "sheet-metal-fabrication",
+      "slug": "sheet-metal-fabrication",
+      "name": "Sheet Metal Fabrication",
+      "description": "End-to-end sheet metal fabrication services for precision components.",
+      "bullets": [
+        "Tolerances up to ±0.005 inches",
+        "Prototype and mass production",
+        "Samples in as fast as 3 days"
+      ],
+      "image": "/assets/capabilities/card-08.png"
+    },
+    {
+      "id": "die-casting",
+      "slug": "die-casting",
+      "name": "Die Casting",
+      "description": "High-precision die casting for complex metal parts with fast turnaround.",
+      "bullets": [
+        "Tolerances up to ±0.001 inches",
+        "Prototype and large-scale production",
+        "Lead time as fast as 2 days"
+      ],
+      "image": "/assets/capabilities/card-04.png"
+    },
+    {
+      "id": "aluminum-extrusion",
+      "slug": "aluminum-extrusion",
+      "name": "Aluminum Extrusion",
+      "description": "Custom aluminum extrusions tailored to your specifications with rapid lead times.",
+      "bullets": [
+        "Tolerances within ±0.001 inches",
+        "Prototyping and full-scale production",
+        "Lead time as fast as 2 days"
+      ],
+      "image": "/assets/capabilities/card-01.png"
+    },
+    {
+      "id": "wire-edm",
+      "slug": "wire-edm",
+      "name": "Wire EDM",
+      "description": "Ultra-precise Wire EDM services for complex geometries and hardened materials.",
+      "bullets": [
+        "Tolerances up to ±0.001 inches",
+        "Supports hardened steels & superalloys",
+        "Ideal for aerospace & medical parts"
+      ],
+      "image": "/assets/capabilities/card-02.png"
+    },
+    {
+      "id": "vacuum-casting",
+      "slug": "vacuum-casting",
+      "name": "Vacuum Casting",
+      "description": "Rapid vacuum casting for complex parts with excellent surface finish.",
+      "bullets": [
+        "Tolerances up to ±0.05 mm",
+        "Ideal for low-volume production",
+        "Up to 50 parts per mold"
+      ],
+      "image": "/assets/capabilities/card-03.png"
+    },
+    {
+      "id": "insert-molding",
+      "slug": "insert-molding",
+      "name": "Insert Molding",
+      "description": "High-precision insert molding for complex and durable components.",
+      "bullets": [
+        "Tolerances up to ±0.025 mm",
+        "Prototype and production tooling",
+        "Lead time ~15 business days"
+      ],
+      "image": "/assets/capabilities/card-09.png"
+    },
+    {
+      "id": "overmolding",
+      "slug": "overmolding",
+      "name": "Overmolding",
+      "description": "Advanced overmolding services combining materials for enhanced functionality.",
+      "bullets": [
+        "Tolerances up to ±0.025 mm",
+        "Multiple material combinations",
+        "Rapid tooling and samples"
+      ],
+      "image": "/assets/capabilities/card-10.png"
+    },
+    {
+      "id": "injection-mold-tooling",
+      "slug": "injection-mold-tooling",
+      "name": "Injection Mold Tooling",
+      "description": "Fast and precise injection mold tooling for complex applications.",
+      "bullets": [
+        "Tolerances up to ±0.02 mm",
+        "Prototype and production tooling",
+        "Lead time as fast as 2 days"
+      ],
+      "image": "/assets/capabilities/card-11.png"
+    },
+    {
+      "id": "injection-molding",
+      "slug": "injection-molding",
+      "name": "Injection Molding",
+      "description": "High-quality custom injection molding from prototyping to mass production.",
+      "bullets": [
+        "Tolerances up to ±0.01 mm",
+        "Low to high-volume manufacturing",
+        "Standard lead time ~15 days"
+      ],
+      "image": "/assets/capabilities/card-16.png"
+    },
+    {
+      "id": "precision-machining",
+      "slug": "precision-machining",
+      "name": "Precision Machining",
+      "description": "Ultra-precise CNC machining for demanding and specialized applications.",
+      "bullets": [
+        "Tolerances up to ±0.0001 inches",
+        "Complex high-accuracy components",
+        "Delivery as fast as 1 day"
+      ],
+      "image": "/assets/capabilities/card-12.png"
+    }
+  ]
+  

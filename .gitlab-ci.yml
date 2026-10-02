@@ -1,0 +1,65 @@
+stages:
+  - build
+  - test
+  - deploy
+
+default:
+  image: node:22.11.0
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - node_modules/
+    policy: pull-push
+
+# ── Build ──────────────────────────────────────────────────────────────────────
+build-job:
+  stage: build
+  script:
+    - echo "Installing dependencies…"
+    - npm ci --prefer-offline
+    - echo "Running production build…"
+    - npm run build
+  artifacts:
+    paths:
+      - .next/
+    expire_in: 1 hour
+
+# ── Test ───────────────────────────────────────────────────────────────────────
+typecheck-job:
+  stage: test
+  needs: [build-job]
+  script:
+    - echo "Running TypeScript type check…"
+    - npm run typecheck
+
+lint-job:
+  stage: test
+  needs: [build-job]
+  script:
+    - echo "Running ESLint…"
+    - npm run lint
+
+# ── Deploy ─────────────────────────────────────────────────────────────────────
+deploy_preview:
+  stage: deploy
+  needs: [typecheck-job, lint-job]
+  except:
+    - develop
+    - main
+  script:
+    - npm install --global vercel
+    - vercel pull --yes --environment=preview --token=$VERCEL_TOKEN
+    - vercel deploy --prebuilt --token=$VERCEL_TOKEN
+
+deploy_production:
+  stage: deploy
+  needs: [typecheck-job, lint-job]
+  only:
+    - main
+  script:
+    - npm install --global vercel
+    - vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+    - vercel build --prod --token=$VERCEL_TOKEN
+    - vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN

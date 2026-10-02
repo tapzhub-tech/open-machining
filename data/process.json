@@ -1,0 +1,27 @@
+{
+    "steps": [
+      {
+        "number": "01",
+        "title": "Upload Design",
+        "description": "Upload your CAD files or drawings securely to start the manufacturing process."
+      },
+      {
+        "number": "02",
+        "title": "Instant Quotation",
+        "description": "Receive instant pricing and lead times based on material and manufacturing method."
+      },
+      {
+        "number": "03",
+        "title": "Production",
+        "description": "Our engineers review your design and begin precision manufacturing."
+      },
+      {
+        "number": "04",
+        "title": "Quality Check & Delivery",
+        "description": "Each part undergoes rigorous inspection before being shipped to you."
+      }
+    ],
+    "cta": "Let’s Get Started",
+    "image": "/assets/process/Process.png"
+  }
+  
