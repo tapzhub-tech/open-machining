@@ -1,18 +1,37 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+let anonClient: SupabaseClient | null = null;
 
-
-if (!process.env.SUPABASE_SERVICE_ROLE_KEY) {
-  
+// Created on first use so a missing env var fails the request, not `next build`.
+function getAnonClient(): SupabaseClient {
+  if (!anonClient) {
+    if (!supabaseUrl || !supabaseAnonKey) {
+      throw new Error(
+        'Supabase is not configured: set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.'
+      );
+    }
+    anonClient = createClient(supabaseUrl, supabaseAnonKey);
+  }
+  return anonClient;
 }
-export const supabaseAdmin: SupabaseClient | null = process.env.SUPABASE_SERVICE_ROLE_KEY
-  ? createClient(supabaseUrl, process.env.SUPABASE_SERVICE_ROLE_KEY, { auth: { persistSession: false } })
-  : null;
-  
+
+export const supabase = new Proxy({} as SupabaseClient, {
+  get(_target, prop) {
+    const client = getAnonClient();
+    const value = Reflect.get(client, prop, client);
+    return typeof value === 'function' ? value.bind(client) : value;
+  },
+});
+
+export const supabaseAdmin: SupabaseClient | null =
+  supabaseUrl && supabaseServiceRoleKey
+    ? createClient(supabaseUrl, supabaseServiceRoleKey, { auth: { persistSession: false } })
+    : null;
+
 export interface Vendor {
   id: string;
   company_name: string;
