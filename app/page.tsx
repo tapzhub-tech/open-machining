@@ -21,10 +21,10 @@ export default function Home() {
 
       <main>
         <Hero />
+        <NetworkProofSection />
         <LiveOpportunitiesSection />
         <TenderFlowSection />
         <ServicesSection />
-        <NetworkProofSection />
         <AudiencesSection />
         <IndustriesStrip />
         <CtaBand />
