@@ -1,10 +1,18 @@
 // app/page.tsx
 import { Hero } from '@/components/hero';
 import { ServicesSection } from '@/components/services-section';
-import { WhyChooseUs } from '@/components/why-choose-us';
-import { IndustriesSection } from '@/components/industries-section';
-import { ProcessSection } from '@/components/process-section';
-import { Navbar } from '@/components/navbar'; // <- add this
+import { Navbar } from '@/components/navbar';
+import {
+  AudiencesSection,
+  CtaBand,
+  IndustriesStrip,
+  LiveOpportunitiesSection,
+  NetworkProofSection,
+  TenderFlowSection,
+} from '@/components/home-sections';
+
+// Tenders are edited in /admin; refresh listings every 5 minutes.
+export const revalidate = 300;
 
 export default function Home() {
   return (
@@ -13,10 +21,13 @@ export default function Home() {
 
       <main>
         <Hero />
+        <LiveOpportunitiesSection />
+        <TenderFlowSection />
         <ServicesSection />
-        <WhyChooseUs />
-        <IndustriesSection />
-        <ProcessSection />
+        <NetworkProofSection />
+        <AudiencesSection />
+        <IndustriesStrip />
+        <CtaBand />
       </main>
     </>
   );

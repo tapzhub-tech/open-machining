@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import ExcelJS from "exceljs";
 import { supabaseAdmin } from "@/lib/supabase";
+import { requireAdmin } from "@/lib/admin-auth";
 
 export async function GET(request: Request) {
   try {
@@ -11,24 +12,8 @@ export async function GET(request: Request) {
     const validateOnly = url.searchParams.get("validateOnly") === "true";
 
     // 🔐 Password is read from the Authorization header: "Bearer <password>"
-    // No longer accepted via query-string to keep it out of server logs.
-    const envPassword = (process.env.ADMIN_PASSWORD || "").trim();
-    const authHeader = request.headers.get("authorization") || "";
-    const providedPassword = authHeader.startsWith("Bearer ")
-      ? authHeader.slice(7).trim()
-      : "";
-
-    if (!envPassword) {
-      console.error("ADMIN_PASSWORD environment variable is not set");
-      return NextResponse.json(
-        { error: "Admin password is not configured on the server" },
-        { status: 500 }
-      );
-    }
-
-    if (!providedPassword || providedPassword !== envPassword) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    const denied = requireAdmin(request);
+    if (denied) return denied;
 
     // Login-check only — no export needed
     if (validateOnly) {

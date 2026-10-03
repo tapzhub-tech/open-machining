@@ -1,330 +1,180 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { Menu, X, ChevronDown } from 'lucide-react';
 
 const LOCAL_LOGO_URL = '/assets/logo/logo.png';
 
+type NavItem = {
+  name: string;
+  href: string;
+  children?: { name: string; href: string; description: string }[];
+};
+
+const navItems: NavItem[] = [
+  { name: 'Opportunities', href: '/opportunities' },
+  { name: 'Bid Management', href: '/bid-management' },
+  {
+    name: 'Manufacturing',
+    href: '/capabilities',
+    children: [
+      { name: 'Capabilities', href: '/capabilities', description: 'Processes, materials and finishes' },
+      { name: 'Contract Manufacturing', href: '/solution', description: 'Prototype → production → delivery' },
+      { name: 'Machine Server', href: '/machine-server', description: 'Machine capacity across the network' },
+    ],
+  },
+  { name: 'Industries', href: '/industries' },
+  { name: 'Network', href: '/network' },
+  { name: 'About', href: '/about' },
+];
+
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-
-  const [capOpen, setCapOpen] = useState(false);
-  const [capShow, setCapShow] = useState(false);
-  const [capTop, setCapTop] = useState<number>(80);
-  const capRef = useRef<HTMLDivElement | null>(null);
-  const capTriggerRef = useRef<HTMLButtonElement | null>(null);
-  const capHoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const [solOpen, setSolOpen] = useState(false);
-  const [solShow, setSolShow] = useState(false);
-  const [solTop, setSolTop] = useState<number>(80);
-  const solRef = useRef<HTMLDivElement | null>(null);
-  const solTriggerRef = useRef<HTMLButtonElement | null>(null);
-  const solHoverTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const [mobileCapOpen, setMobileCapOpen] = useState(false);
-  const [mobileSolOpen, setMobileSolOpen] = useState(false);
-
+  const [mobileExpanded, setMobileExpanded] = useState<string | null>(null);
   const pathname = usePathname();
-  const router = useRouter();
 
-  /* ---------- scroll shadow ---------- */
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
-    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const computeTop = (
-    btn: HTMLButtonElement | null,
-    setter: (v: number) => void
-  ) => {
-    if (!btn) return setter(80);
-    const rect = btn.getBoundingClientRect();
-    setter(Math.round(rect.bottom + window.scrollY + 8));
-  };
-
   useEffect(() => {
-    if (!capOpen) return;
-    computeTop(capTriggerRef.current, setCapTop);
-    const onWin = () => computeTop(capTriggerRef.current, setCapTop);
-    window.addEventListener('resize', onWin);
-    window.addEventListener('scroll', onWin, { passive: true });
-    return () => {
-      window.removeEventListener('resize', onWin);
-      window.removeEventListener('scroll', onWin);
-    };
-  }, [capOpen]);
-
-  useEffect(() => {
-    if (!solOpen) return;
-    computeTop(solTriggerRef.current, setSolTop);
-    const onWin = () => computeTop(solTriggerRef.current, setSolTop);
-    window.addEventListener('resize', onWin);
-    window.addEventListener('scroll', onWin, { passive: true });
-    return () => {
-      window.removeEventListener('resize', onWin);
-      window.removeEventListener('scroll', onWin);
-    };
-  }, [solOpen]);
-
-  useEffect(() => {
-    if (!capOpen) return setCapShow(false);
-    setCapShow(false);
-    const id = requestAnimationFrame(() => setCapShow(true));
-    return () => cancelAnimationFrame(id);
-  }, [capOpen]);
-
-  useEffect(() => {
-    if (!solOpen) return setSolShow(false);
-    setSolShow(false);
-    const id = requestAnimationFrame(() => setSolShow(true));
-    return () => cancelAnimationFrame(id);
-  }, [solOpen]);
-
-  useEffect(() => {
-    setCapOpen(false);
-    setSolOpen(false);
-    setMobileCapOpen(false);
-    setMobileSolOpen(false);
     setIsOpen(false);
+    setMobileExpanded(null);
   }, [pathname]);
 
-  useEffect(() => {
-    const onDoc = (e: MouseEvent) => {
-      const t = e.target as Node;
-      if (capOpen) {
-        if (!capRef.current?.contains(t) && !capTriggerRef.current?.contains(t)) {
-          setCapOpen(false);
-        }
-      }
-      if (solOpen) {
-        if (!solRef.current?.contains(t) && !solTriggerRef.current?.contains(t)) {
-          setSolOpen(false);
-        }
-      }
-    };
-    document.addEventListener('mousedown', onDoc);
-    return () => document.removeEventListener('mousedown', onDoc);
-  }, [capOpen, solOpen]);
+  const isActive = (item: NavItem) =>
+    pathname === item.href || item.children?.some((c) => pathname === c.href);
 
-  const openCap = () => {
-    if (capHoverTimer.current) clearTimeout(capHoverTimer.current);
-    setSolOpen(false);
-    setCapOpen(true);
-  };
-  const closeCap = () => {
-    if (capHoverTimer.current) clearTimeout(capHoverTimer.current);
-    capHoverTimer.current = setTimeout(() => setCapOpen(false), 120);
-  };
-
-  const openSol = () => {
-    if (solHoverTimer.current) clearTimeout(solHoverTimer.current);
-    setCapOpen(false);
-    setSolOpen(true);
-  };
-  const closeSol = () => {
-    if (solHoverTimer.current) clearTimeout(solHoverTimer.current);
-    solHoverTimer.current = setTimeout(() => setSolOpen(false), 120);
-  };
-
-  const navItems = [
-    { name: "Capabilities", href: "/capabilities", isMega: "cap" as const },
-    { name: "Industries", href: "/industries" },
-    { name: "Machine Server", href: "/machine-server" },
-    { name: "Solutions", href: "/solution", isMega: "sol" as const },
-    { name: "Contact", href: "/contact" },
-  ];
-
-  const topLink =
-    "text-slate-800 font-semibold hover:text-blue-700 transition-colors relative group px-3 py-2 rounded-md whitespace-nowrap";
+  const topLink = (active: boolean) =>
+    `px-3 py-2 rounded-md text-[15px] font-semibold whitespace-nowrap transition-colors ${
+      active ? 'text-blue-700' : 'text-slate-800 hover:text-blue-700'
+    }`;
 
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-white shadow-md" : "bg-white/95 backdrop-blur-sm"
+        isScrolled || isOpen ? 'bg-white shadow-md' : 'bg-white/95 backdrop-blur-sm'
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center h-14 md:h-16 justify-between">
-          <Link href="/" className="flex items-center gap-3">
-            <img
-              src={LOCAL_LOGO_URL}
-              alt="Open Manufacturing Logo"
-              className="object-contain h-10 md:h-12 lg:h-14 w-auto"
-            />
+        <div className="flex items-center h-14 md:h-16 justify-between gap-6">
+          <Link href="/" className="flex items-center gap-3 flex-shrink-0">
+            <img src={LOCAL_LOGO_URL} alt="Open Machining" className="object-contain h-10 md:h-12 w-auto" />
           </Link>
 
-          {/* center nav */}
-          <div className="hidden lg:flex flex-grow justify-center">
-            <ul className="flex items-center space-x-1">
-              <li>
-                <Link href="/" className={topLink}>
-                  Home
-                </Link>
-              </li>
+          <ul className="hidden lg:flex items-center gap-1">
+            {navItems.map((item) =>
+              item.children ? (
+                <li key={item.name} className="relative group">
+                  <Link
+                    href={item.href}
+                    className={`${topLink(!!isActive(item))} inline-flex items-center gap-1`}
+                    aria-haspopup="true"
+                  >
+                    {item.name}
+                    <ChevronDown className="h-4 w-4 transition-transform group-hover:rotate-180" />
+                  </Link>
+                  <div className="invisible opacity-0 translate-y-1 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 group-focus-within:visible group-focus-within:opacity-100 group-focus-within:translate-y-0 transition absolute left-0 top-full pt-2">
+                    <ul className="w-72 rounded-xl border border-slate-200 bg-white p-2 shadow-xl">
+                      {item.children.map((c) => (
+                        <li key={c.href}>
+                          <Link href={c.href} className="block rounded-lg px-4 py-3 hover:bg-slate-50">
+                            <span className="block font-semibold text-slate-900">{c.name}</span>
+                            <span className="block text-sm text-slate-500">{c.description}</span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </li>
+              ) : (
+                <li key={item.name}>
+                  <Link href={item.href} className={topLink(!!isActive(item))}>
+                    {item.name}
+                  </Link>
+                </li>
+              )
+            )}
+          </ul>
 
-              <li
-                className="relative"
-                onMouseEnter={() => {
-                  computeTop(capTriggerRef.current, setCapTop);
-                  openCap();
-                }}
-                onMouseLeave={closeCap}
-              >
-                <button
-                  ref={capTriggerRef}
-                  className={`${topLink} inline-flex items-center gap-1`}
-                  onClick={() => router.push("/capabilities")}
-                >
-                  Capabilities
-                  <ChevronDown
-                    className={`h-4 w-4 ${capOpen ? "rotate-180" : ""}`}
-                  />
-                </button>
-              </li>
-
-              <li
-                className="relative"
-                onMouseEnter={() => {
-                  computeTop(solTriggerRef.current, setSolTop);
-                  openSol();
-                }}
-                onMouseLeave={closeSol}
-              >
-                <button
-                  ref={solTriggerRef}
-                  className={`${topLink} inline-flex items-center gap-1`}
-                  onClick={() => router.push("/solution")}
-                >
-                  Solutions
-                  <ChevronDown
-                    className={`h-4 w-4 ${solOpen ? "rotate-180" : ""}`}
-                  />
-                </button>
-              </li>
-
-              {navItems
-                .filter((n) => !n.isMega)
-                .map((item) => (
-                  <li key={item.name}>
-                    <Link href={item.href} className={topLink}>
-                      {item.name}
-                    </Link>
-                  </li>
-                ))}
-            </ul>
-          </div>
-
-          <div className="hidden lg:flex items-center ml-auto">
+          <div className="hidden lg:flex items-center gap-2 flex-shrink-0">
             <Link
-              href="/register"
-              className="inline-flex items-center justify-center px-5 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition whitespace-nowrap"
+              href="/contact"
+              className="inline-flex items-center justify-center px-5 py-2 rounded-md bg-blue-600 text-white font-semibold hover:bg-blue-700 transition whitespace-nowrap"
             >
-              Register a Vendor
+              Start a Project
             </Link>
           </div>
 
-          <div className="lg:hidden ml-auto flex items-center gap-2">
-            <button
-              onClick={() => setIsOpen((s) => !s)}
-              aria-label={isOpen ? 'Close menu' : 'Open menu'}
-              className="p-2 rounded-md text-slate-700 hover:bg-slate-100 transition"
-            >
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
+          <button
+            onClick={() => setIsOpen((s) => !s)}
+            aria-label={isOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={isOpen}
+            className="lg:hidden p-2 rounded-md text-slate-700 hover:bg-slate-100 transition"
+          >
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
 
-        {/* Mobile Menu */}
         {isOpen && (
-          <div className="lg:hidden border-t border-slate-200 bg-white/95 backdrop-blur-sm max-h-[calc(100vh-4rem)] overflow-y-auto animate-in fade-in slide-in-from-top-2">
-            <div className="px-4 py-4 space-y-2">
-              <Link
-                href="/"
-                className="block px-4 py-2 rounded-lg text-slate-700 hover:bg-slate-100 font-medium transition"
-              >
-                Home
-              </Link>
-
-              {/* Mobile Capabilities Dropdown */}
-              <div className="space-y-1">
-                <button
-                  onClick={() => setMobileCapOpen(!mobileCapOpen)}
-                  className="w-full flex items-center justify-between px-4 py-2 rounded-lg text-slate-700 hover:bg-slate-100 font-medium transition"
-                >
-                  Capabilities
-                  <ChevronDown
-                    size={18}
-                    className={`transition-transform ${mobileCapOpen ? 'rotate-180' : ''}`}
-                  />
-                </button>
-                {mobileCapOpen && (
-                  <div className="pl-4 space-y-1 border-l-2 border-blue-200">
-                    <Link
-                      href="/capabilities"
-                      className="block px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 text-sm transition"
+          <div className="lg:hidden border-t border-slate-200 max-h-[calc(100vh-4rem)] overflow-y-auto">
+            <div className="py-4 space-y-1">
+              {navItems.map((item) =>
+                item.children ? (
+                  <div key={item.name}>
+                    <button
+                      onClick={() => setMobileExpanded(mobileExpanded === item.name ? null : item.name)}
+                      aria-expanded={mobileExpanded === item.name}
+                      className="w-full flex items-center justify-between px-4 py-2 rounded-lg text-slate-700 hover:bg-slate-100 font-medium transition"
                     >
-                      View All Capabilities
-                    </Link>
+                      {item.name}
+                      <ChevronDown
+                        size={18}
+                        className={`transition-transform ${mobileExpanded === item.name ? 'rotate-180' : ''}`}
+                      />
+                    </button>
+                    {mobileExpanded === item.name && (
+                      <div className="ml-4 pl-2 border-l-2 border-blue-200 space-y-1">
+                        {item.children.map((c) => (
+                          <Link
+                            key={c.href}
+                            href={c.href}
+                            className="block px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 text-sm transition"
+                          >
+                            {c.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-
-              <Link
-                href="/industries"
-                className="block px-4 py-2 rounded-lg text-slate-700 hover:bg-slate-100 font-medium transition"
-              >
-                Industries
-              </Link>
-
-              <Link
-                href="/machine-server"
-                className="block px-4 py-2 rounded-lg text-slate-700 hover:bg-slate-100 font-medium transition"
-              >
-                Machine Server
-              </Link>
-
-              {/* Mobile Solutions Dropdown */}
-              <div className="space-y-1">
-                <button
-                  onClick={() => setMobileSolOpen(!mobileSolOpen)}
-                  className="w-full flex items-center justify-between px-4 py-2 rounded-lg text-slate-700 hover:bg-slate-100 font-medium transition"
+                ) : (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className="block px-4 py-2 rounded-lg text-slate-700 hover:bg-slate-100 font-medium transition"
+                  >
+                    {item.name}
+                  </Link>
+                )
+              )}
+              <div className="pt-3 mt-2 border-t border-slate-200 grid grid-cols-2 gap-2">
+                <Link
+                  href="/contact"
+                  className="flex items-center justify-center px-4 py-3 rounded-md bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
                 >
-                  Solutions
-                  <ChevronDown
-                    size={18}
-                    className={`transition-transform ${mobileSolOpen ? 'rotate-180' : ''}`}
-                  />
-                </button>
-                {mobileSolOpen && (
-                  <div className="pl-4 space-y-1 border-l-2 border-blue-200">
-                    <Link
-                      href="/solution"
-                      className="block px-4 py-2 rounded-lg text-slate-600 hover:bg-slate-100 text-sm transition"
-                    >
-                      View All Solutions
-                    </Link>
-                  </div>
-                )}
-              </div>
-
-              <Link
-                href="/contact"
-                className="block px-4 py-2 rounded-lg text-slate-700 hover:bg-slate-100 font-medium transition"
-              >
-                Contact
-              </Link>
-
-              <div className="pt-2 border-t border-slate-200">
+                  Start a Project
+                </Link>
                 <Link
                   href="/register"
-                  className="flex items-center justify-center px-4 py-3 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition w-full"
+                  className="flex items-center justify-center px-4 py-3 rounded-md border border-slate-300 text-slate-800 font-semibold hover:bg-slate-50 transition"
                 >
-                  Register a Vendor
+                  Join as Vendor
                 </Link>
               </div>
             </div>

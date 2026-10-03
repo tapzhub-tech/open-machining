@@ -36,16 +36,18 @@ export function ServicesSection() {
 
   return (
     <section className="py-16 md:py-24 bg-slate-50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* ================= HEADING ================= */}
-        <div className="text-center mb-12 md:mb-16">
-          <h2 className="text-3xl md:text-4xl font-semibold tracking-tight text-slate-900 mb-4">
-            Our Manufacturing{" "}
-            <span className="text-[#3B82F6]">Capabilities</span>
+        <div className="max-w-3xl mb-10 md:mb-14">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] mb-3 text-blue-700">
+            Build · Contract manufacturing
+          </p>
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-slate-900 mb-4">
+            Prototype to production, across processes.
           </h2>
-          <p className="text-[17px] text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Comprehensive manufacturing services powered by advanced technology
-            and expert craftsmanship.
+          <p className="text-lg text-slate-600 leading-relaxed">
+            One accountable partner for machining, moulding, additive and
+            assembly, backed by a qualified network of manufacturers.
           </p>
         </div>
 

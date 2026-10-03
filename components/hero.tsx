@@ -1,105 +1,85 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-
-/**
- * ===============================
- * LOCAL HERO CONFIG (TEMP FIX)
- * ===============================
- * Agar future me CMS wapas lana ho
- * bas yaha se source change karna hoga
- */
+import { pipeline } from "@/data/platform";
 
 const HERO_VIDEO_URL = "/assets/hero/hero-bg.mp4";
-// agar kabhi video nahi ho to gradient fallback rahega
 
 export function Hero() {
-  const videoUrl = HERO_VIDEO_URL;
-
   return (
-    <section className="relative h-[600px] md:h-[700px] flex items-center justify-center overflow-hidden">
-      {videoUrl ? (
-        <video
-          src={videoUrl}
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-      ) : (
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900" />
-      )}
+    <section className="relative overflow-hidden bg-slate-950 pt-28 md:pt-36 pb-16 md:pb-24">
+      <video
+        src={HERO_VIDEO_URL}
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="auto"
+        className="absolute inset-0 w-full h-full object-cover opacity-30"
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-950/60 via-slate-950/80 to-slate-950" />
+      <div
+        aria-hidden
+        className="absolute inset-0 opacity-[0.07] [background-image:linear-gradient(to_right,white_1px,transparent_1px),linear-gradient(to_bottom,white_1px,transparent_1px)] [background-size:48px_48px]"
+      />
 
-      {/* overlay */}
-      <div className="absolute inset-0 bg-slate-900/70" />
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl">
+          <p className="inline-flex items-center gap-2 text-xs md:text-sm font-semibold uppercase tracking-[0.2em] text-blue-300 mb-6">
+            <span className="h-px w-8 bg-blue-400" />
+            Procurement intelligence · Bid management · Contract manufacturing
+          </p>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
-          Open Manufacturing
-          <br />
-          <span className="text-slate-300">
-            Explore manufacturing in India
-          </span>
-        </h1>
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight text-white leading-[1.05] mb-6">
+            From opportunity
+            <br />
+            <span className="text-blue-400">to delivery.</span>
+          </h1>
 
-        <p className="text-lg md:text-xl text-slate-200 mb-8 max-w-3xl mx-auto leading-relaxed">
-          Advanced CNC machining, injection molding, and rapid prototyping
-          services. From concept to production, we deliver quality parts with
-          fast turnaround times.
-        </p>
+          <p className="text-lg md:text-xl text-slate-300 max-w-2xl leading-relaxed mb-10">
+            Find the opportunity. Build the bid. Manufacture. Deliver. Open
+            Machining brings procurement, engineering and India&apos;s
+            manufacturing capacity together in one platform.
+          </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Link href="/register">
-            <Button
-              size="lg"
-              className="bg-white text-slate-900 hover:bg-slate-100 text-lg px-8 py-6 group"
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Link
+              href="/opportunities"
+              className="group inline-flex items-center justify-center gap-2 rounded-md bg-blue-600 px-7 py-4 text-base font-semibold text-white hover:bg-blue-500 transition"
             >
-              Register a Vendor
-              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-            </Button>
-          </Link>
-
-          <Link href="/services">
-            <Button
-              size="lg"
-              variant="outline"
-              className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-slate-900 text-lg px-8 py-6"
+              Explore opportunities
+              <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
+            <Link
+              href="/contact"
+              className="inline-flex items-center justify-center rounded-md border border-white/30 px-7 py-4 text-base font-semibold text-white hover:bg-white hover:text-slate-900 transition"
             >
-              View Services
-            </Button>
-          </Link>
+              Start a project
+            </Link>
+          </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-8 mt-16 max-w-3xl mx-auto">
-          <div>
-            <div className="text-3xl md:text-4xl font-bold text-white">
-              500+
-            </div>
-            <div className="text-sm text-slate-300">
-              Projects Completed
-            </div>
-          </div>
-
-          <div className="border-l border-r border-slate-600">
-            <div className="text-3xl md:text-4xl font-bold text-white">
-              24hr
-            </div>
-            <div className="text-sm text-slate-300">
-              Quick Turnaround
-            </div>
-          </div>
-
-          <div>
-            <div className="text-3xl md:text-4xl font-bold text-white">
-              99.8%
-            </div>
-            <div className="text-sm text-slate-300">
-              Quality Rate
-            </div>
-          </div>
-        </div>
+        {/* Find → Bid → Build → Deliver */}
+        <ol className="mt-16 md:mt-24 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px overflow-hidden rounded-xl border border-white/10 bg-white/10">
+          {pipeline.map((stage) => (
+            <li key={stage.id} className="bg-slate-950/80 backdrop-blur p-6">
+              <Link href={stage.href} className="group block">
+                <div className="flex items-baseline justify-between mb-3">
+                  <span className="text-2xl font-bold text-white">{stage.title}</span>
+                  <span className="font-mono text-xs text-slate-500">{stage.step}</span>
+                </div>
+                <p className="text-sm text-slate-400 mb-4">{stage.tagline}</p>
+                <ul className="space-y-1.5">
+                  {stage.items.map((item) => (
+                    <li key={item} className="flex items-center gap-2 text-sm text-slate-300">
+                      <span className="h-1 w-1 rounded-full bg-blue-400" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </Link>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
   );
