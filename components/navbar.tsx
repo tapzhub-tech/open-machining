@@ -108,7 +108,7 @@ export function Navbar() {
               href="/contact"
               className="inline-flex items-center justify-center px-5 py-2 rounded-md bg-blue-600 text-white font-semibold hover:bg-blue-700 transition whitespace-nowrap"
             >
-              Start a Project
+              Contact Us
             </Link>
           </div>
 
@@ -168,7 +168,7 @@ export function Navbar() {
                   href="/contact"
                   className="flex items-center justify-center px-4 py-3 rounded-md bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
                 >
-                  Start a Project
+                  Contact Us
                 </Link>
                 <Link
                   href="/register"

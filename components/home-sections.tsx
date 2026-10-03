@@ -62,7 +62,25 @@ export async function LiveOpportunitiesSection() {
   );
 }
 
-export function NetworkProofSection() {
+async function getCapacityMetrics() {
+  try {
+    const { getMachineServerStats, supabaseAdmin, supabase } = await import('@/lib/supabase');
+    const stats = await getMachineServerStats(supabaseAdmin ?? supabase);
+    const metrics = [
+      { value: stats.vendorsCount, label: 'Registered vendors' },
+      { value: stats.machinesCount, label: 'Machines on floor' },
+      { value: stats.technicalStaffCount, label: 'Skilled technical staff' },
+      { value: stats.programmersCount, label: 'CNC programmers' },
+    ];
+    return metrics.some((m) => m.value > 0) ? metrics : null;
+  } catch (e) {
+    console.error('Failed to load capacity metrics for homepage:', e);
+    return null;
+  }
+}
+
+export async function NetworkProofSection() {
+  const metrics = await getCapacityMetrics();
   return (
     <section className="py-16 md:py-24 bg-slate-950">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -72,6 +90,30 @@ export function NetworkProofSection() {
           title="Engineering-led. Quality-controlled. Built on India's MSME capacity."
           body="Every order is engineered, sourced and inspected by one accountable team, drawing on a qualified network of manufacturing partners."
         />
+        {metrics && (
+          <div className="mb-6">
+            <dl className="grid grid-cols-2 lg:grid-cols-4 gap-px overflow-hidden rounded-xl border border-blue-400/30 bg-blue-400/30">
+              {metrics.map((m) => (
+                <div key={m.label} className="bg-slate-900 p-6 md:p-8">
+                  <dt className="sr-only">{m.label}</dt>
+                  <dd className="text-4xl md:text-5xl font-bold tabular-nums text-white mb-2">
+                    {m.value.toLocaleString('en-IN')}
+                  </dd>
+                  <dd className="text-sm font-medium text-blue-200">{m.label}</dd>
+                </div>
+              ))}
+            </dl>
+            <div className="mt-3 flex justify-end">
+              <Link
+                href="/machine-server"
+                className="group inline-flex items-center gap-2 text-sm font-semibold text-blue-300 hover:text-blue-200"
+              >
+                View machining capacity
+                <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
+          </div>
+        )}
         <dl className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px overflow-hidden rounded-xl border border-white/10 bg-white/10">
           {proofMarkers.map((m) => (
             <div key={m.value} className="bg-slate-950 p-6 md:p-8">

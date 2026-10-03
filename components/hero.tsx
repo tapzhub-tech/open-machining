@@ -41,7 +41,7 @@ export function Hero() {
             manufacturing capacity together in one platform.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3">
             <Link
               href="/opportunities"
               className="group inline-flex items-center justify-center gap-2 rounded-md bg-blue-600 px-7 py-4 text-base font-semibold text-white hover:bg-blue-500 transition"
@@ -50,10 +50,16 @@ export function Hero() {
               <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link
-              href="/contact"
+              href="/register"
               className="inline-flex items-center justify-center rounded-md border border-white/30 px-7 py-4 text-base font-semibold text-white hover:bg-white hover:text-slate-900 transition"
             >
-              Start a project
+              Register as Vendor
+            </Link>
+            <Link
+              href="/machine-server"
+              className="inline-flex items-center justify-center rounded-md border border-white/30 px-7 py-4 text-base font-semibold text-white hover:bg-white hover:text-slate-900 transition"
+            >
+              Machining Capacity
             </Link>
           </div>
         </div>
