@@ -1,8 +1,8 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-const supabaseUrl = 'https://kgfktnhsjjzzwugvpjcr.supabase.co';
-const supabaseAnonKey = process.env.JWT;
-const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY_3;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 let anonClient: SupabaseClient | null = null;
 
@@ -11,7 +11,7 @@ function getAnonClient(): SupabaseClient {
   if (!anonClient) {
     if (!supabaseUrl || !supabaseAnonKey) {
       throw new Error(
-        'Supabase is not configured: set the JWT environment variable (anon key).'
+        'Supabase is not configured: set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.'
       );
     }
     anonClient = createClient(supabaseUrl, supabaseAnonKey);
