@@ -22,7 +22,7 @@ const navItems: NavItem[] = [
     children: [
       { name: 'Capabilities', href: '/capabilities', description: 'Processes, materials and finishes' },
       { name: 'Contract Manufacturing', href: '/solution', description: 'Prototype → production → delivery' },
-      { name: 'Machine Server', href: '/machine-server', description: 'Machine capacity across the network' },
+      { name: 'Machining Capacity', href: '/machine-server', description: 'Live machine capacity across the network' },
     ],
   },
   { name: 'Industries', href: '/industries' },

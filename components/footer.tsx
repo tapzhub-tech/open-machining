@@ -5,6 +5,7 @@ const columns = [
     title: 'Platform',
     links: [
       { name: 'Opportunities', href: '/opportunities' },
+      { name: 'Manufacture With Us', href: '/manufacture-with-us' },
       { name: 'Bid Management', href: '/bid-management' },
       { name: 'Manufacturing Network', href: '/network' },
       { name: 'Register as Vendor', href: '/register' },
@@ -17,7 +18,7 @@ const columns = [
       { name: 'Contract Manufacturing', href: '/solution' },
       { name: 'CNC Machining', href: '/services/cnc-machining' },
       { name: 'Injection Moulding', href: '/services/injection-molding' },
-      { name: 'Machine Server', href: '/machine-server' },
+      { name: 'Machining Capacity', href: '/machine-server' },
     ],
   },
   {
@@ -34,7 +35,7 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-slate-950 text-slate-400">
+    <footer className="bg-slate-950 text-slate-400 print:hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
           <div className="lg:col-span-2">

@@ -7,6 +7,7 @@ import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { requireAdmin } from '@/lib/admin-auth';
 import { entities, isEntityKey, sanitizePayload } from '@/lib/admin-entities';
+import { RFQ_BUCKET } from '@/lib/rfq';
 
 type Ctx = { params: Promise<{ entity: string }> };
 
@@ -29,7 +30,18 @@ export async function GET(request: Request, { params }: Ctx) {
     console.error(`Supabase error (list ${def.table}):`, error);
     return NextResponse.json({ error: `Failed to load ${def.label.toLowerCase()}: ${error.message}` }, { status: 500 });
   }
-  return NextResponse.json({ items: data ?? [] });
+  const items: Record<string, any>[] = (data as any[]) ?? [];
+
+  // Attach short-lived download links for stored files.
+  const fileFields = def.fields.filter((f) => f.type === 'file').map((f) => f.key);
+  const paths = items.flatMap((r) => fileFields.map((k) => r[k]).filter(Boolean)) as string[];
+  if (paths.length) {
+    const { data: signed } = await supabaseAdmin.storage.from(RFQ_BUCKET).createSignedUrls(paths, 60 * 60);
+    const byPath = new Map((signed ?? []).map((s) => [s.path, s.signedUrl]));
+    for (const r of items) for (const k of fileFields) if (r[k]) r[`${k}_url`] = byPath.get(r[k]) ?? null;
+  }
+
+  return NextResponse.json({ items });
 }
 
 export async function POST(request: Request, { params }: Ctx) {
@@ -41,6 +53,7 @@ export async function POST(request: Request, { params }: Ctx) {
   if (!supabaseAdmin) return NextResponse.json({ error: 'Supabase admin client is not configured' }, { status: 500 });
 
   const def = entities[entity];
+  if (def.canCreate === false) return NextResponse.json({ error: `${def.label} cannot be created here` }, { status: 405 });
   const body = await request.json().catch(() => null);
   if (!body || typeof body !== 'object') return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
 

@@ -255,7 +255,7 @@ export function CtaBand() {
         </div>
         <div className="flex flex-col sm:flex-row gap-3">
           <Link
-            href="/contact"
+            href="/manufacture-with-us"
             className="inline-flex items-center justify-center rounded-md bg-white px-6 py-3 font-semibold text-blue-800 hover:bg-blue-50 transition"
           >
             Start a project

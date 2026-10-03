@@ -6,6 +6,7 @@ import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { requireAdmin } from '@/lib/admin-auth';
 import { entities, isEntityKey, sanitizePayload } from '@/lib/admin-entities';
+import { RFQ_BUCKET } from '@/lib/rfq';
 
 type Ctx = { params: Promise<{ entity: string; id: string }> };
 
@@ -48,11 +49,22 @@ export async function DELETE(request: Request, { params }: Ctx) {
   if ('response' in r) return r.response;
 
   // vendors → machines cascade via FK (ON DELETE CASCADE)
-  const { data, error } = await r.client.from(r.def.table).delete().eq('id', r.id).select('id');
+  const fileFields = r.def.fields.filter((f) => f.type === 'file').map((f) => f.key);
+  const { data, error } = await r.client
+    .from(r.def.table)
+    .delete()
+    .eq('id', r.id)
+    .select(['id', ...fileFields].join(','));
   if (error) {
     console.error(`Supabase error (delete ${r.def.table}):`, error);
     return NextResponse.json({ error: `Failed to delete: ${error.message}` }, { status: 500 });
   }
   if (!data?.length) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+
+  const paths = fileFields.map((k) => (data[0] as Record<string, any>)[k]).filter(Boolean);
+  if (paths.length) {
+    const { error: rmError } = await r.client.storage.from(RFQ_BUCKET).remove(paths);
+    if (rmError) console.warn(`Deleted ${r.def.table} row but failed to remove files:`, rmError);
+  }
   return NextResponse.json({ ok: true });
 }

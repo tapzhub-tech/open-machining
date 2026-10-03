@@ -78,7 +78,7 @@ export const audiences = [
     who: 'Buyers & OEMs',
     quote: 'These people can take care of my manufacturing.',
     body: 'Prototype to production across processes, with one accountable partner from drawing to delivery.',
-    cta: { label: 'Start a project', href: '/contact' },
+    cta: { label: 'Start a project', href: '/manufacture-with-us' },
   },
   {
     who: 'Manufacturers',

@@ -3,7 +3,9 @@
 // rendering) and the admin API (column whitelist + type coercion), so only
 // these columns can ever be written from /admin.
 
-export type FieldType = 'text' | 'textarea' | 'number' | 'date' | 'select' | 'list' | 'boolean' | 'url';
+export type FieldType = 'text' | 'textarea' | 'number' | 'date' | 'select' | 'list' | 'boolean' | 'url'
+  /** Storage path; read-only, shown as a signed download link (`<key>_url`) */
+  | 'file';
 
 export interface FieldDef {
   key: string;
@@ -15,16 +17,20 @@ export interface FieldDef {
   column?: boolean;
 }
 
+export type EntityKey = 'vendors' | 'tenders' | 'rfqs';
+
 export interface EntityDef {
-  table: 'vendors' | 'tenders';
+  table: EntityKey;
   label: string;
   singular: string;
   titleKey: string;
   orderBy: string;
+  /** false hides "Add" (rows only come from a public form) */
+  canCreate?: boolean;
   fields: FieldDef[];
 }
 
-export const entities: Record<'vendors' | 'tenders', EntityDef> = {
+export const entities: Record<EntityKey, EntityDef> = {
   vendors: {
     table: 'vendors',
     label: 'Vendors',
@@ -70,10 +76,47 @@ export const entities: Record<'vendors' | 'tenders', EntityDef> = {
       { key: 'notes', label: 'Notes', type: 'textarea' },
     ],
   },
+  rfqs: {
+    table: 'rfqs',
+    label: 'RFQs',
+    singular: 'RFQ',
+    titleKey: 'part_name',
+    orderBy: 'created_at',
+    canCreate: false,
+    fields: [
+      { key: 'status', label: 'Status', type: 'select', options: ['New', 'Reviewing', 'Quoted', 'Won', 'Lost', 'Closed'], column: true },
+      { key: 'part_name', label: 'Part name', type: 'text', required: true, column: true },
+      { key: 'company', label: 'Company', type: 'text', required: true, column: true },
+      { key: 'contact_name', label: 'Contact name', type: 'text', required: true },
+      { key: 'email', label: 'Email', type: 'text', required: true, column: true },
+      { key: 'phone', label: 'Phone', type: 'text' },
+      { key: 'reference_no', label: 'Reference no.', type: 'text' },
+      { key: 'drawing_no', label: 'Drawing no.', type: 'text', required: true },
+      { key: 'drawing_revision', label: 'Revision', type: 'text' },
+      { key: 'quantity', label: 'Quantity', type: 'number', required: true, column: true },
+      { key: 'unit', label: 'Unit', type: 'select', required: true, options: ['pcs', 'sets', 'lots', 'kg'] },
+      { key: 'order_type', label: 'Order type', type: 'select', required: true, options: ['Prototype', 'Small Batch', 'Production', 'Repeat Order'] },
+      { key: 'process', label: 'Process', type: 'select', required: true, options: ['CNC Turning', 'CNC Milling', '5-Axis CNC', 'Wire EDM', 'Grinding', 'Sheet Metal', 'Fabrication', 'Other'], column: true },
+      { key: 'material', label: 'Material', type: 'text', required: true },
+      { key: 'material_grade', label: 'Material grade', type: 'text' },
+      { key: 'surface_finish', label: 'Surface finish', type: 'text' },
+      { key: 'tolerance', label: 'Critical tolerance', type: 'text' },
+      { key: 'heat_treatment', label: 'Heat treatment', type: 'select', options: ['None', 'Required', 'As per drawing'] },
+      { key: 'quality_requirement', label: 'Quality requirement', type: 'select', required: true, options: ['Standard', 'Inspection Report', 'FAI', 'Customer Specification'] },
+      { key: 'material_cert', label: 'Material certificate', type: 'select', options: ['Not Required', 'Required'] },
+      { key: 'coc', label: 'Certificate of Conformance', type: 'select', options: ['Not Required', 'Required'] },
+      { key: 'delivery_date', label: 'Delivery date', type: 'date', required: true, column: true },
+      { key: 'delivery_location', label: 'Delivery location', type: 'text', required: true },
+      { key: 'repeat_order', label: 'Repeat order expected', type: 'select', options: ['No', 'Yes', 'Potential'] },
+      { key: 'notes', label: 'Special instructions', type: 'textarea' },
+      { key: 'drawing_path', label: 'Drawing', type: 'file', column: true },
+      { key: 'cad_path', label: 'CAD file', type: 'file' },
+    ],
+  },
 };
 
-export function isEntityKey(v: string): v is keyof typeof entities {
-  return v === 'vendors' || v === 'tenders';
+export function isEntityKey(v: string): v is EntityKey {
+  return Object.prototype.hasOwnProperty.call(entities, v);
 }
 
 /** Whitelist + coerce an incoming payload. Returns an error string on invalid input. */
@@ -84,7 +127,7 @@ export function sanitizePayload(
 ): { data: Record<string, unknown> } | { error: string } {
   const data: Record<string, unknown> = {};
   for (const f of def.fields) {
-    if (!(f.key in input)) continue;
+    if (f.type === 'file' || !(f.key in input)) continue;
     const raw = input[f.key];
     let val: unknown;
     switch (f.type) {
@@ -123,7 +166,7 @@ export function sanitizePayload(
   }
 
   for (const f of def.fields) {
-    if (!f.required) continue;
+    if (!f.required || f.type === 'file') continue;
     const present = f.key in data;
     if ((mode === 'create' || present) && (data[f.key] === null || data[f.key] === undefined)) {
       return { error: `${f.label} is required` };

@@ -6,7 +6,17 @@ import type { EntityDef, FieldDef } from '@/lib/admin-entities';
 
 type Row = Record<string, any> & { id: string };
 
-function formatCell(f: FieldDef, v: any) {
+function formatCell(f: FieldDef, v: any, row: Row) {
+  if (f.type === 'file') {
+    const url = row[`${f.key}_url`];
+    return url ? (
+      <a href={url} target="_blank" rel="noopener noreferrer" className="font-medium text-blue-700 hover:underline">
+        Download
+      </a>
+    ) : (
+      <span className="text-slate-300">—</span>
+    );
+  }
   if (v === null || v === undefined || v === '') return <span className="text-slate-300">—</span>;
   if (f.type === 'list') return (v as string[]).join(', ');
   if (f.type === 'boolean') return v ? 'Yes' : 'No';
@@ -118,7 +128,7 @@ export function EntityManager({ def, password }: { def: EntityDef; password: str
 
   const openForm = (row: Row | 'new') => {
     const initial: Record<string, any> = {};
-    for (const f of def.fields) initial[f.key] = toFormValue(f, row === 'new' ? undefined : row[f.key]);
+    for (const f of def.fields) if (f.type !== 'file') initial[f.key] = toFormValue(f, row === 'new' ? undefined : row[f.key]);
     setForm(initial);
     setFormError(null);
     setEditing(row);
@@ -184,6 +194,7 @@ export function EntityManager({ def, password }: { def: EntityDef; password: str
             <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
             Refresh
           </button>
+          {def.canCreate !== false && (
           <button
             onClick={() => openForm('new')}
             className="inline-flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
@@ -191,6 +202,7 @@ export function EntityManager({ def, password }: { def: EntityDef; password: str
             <Plus className="h-4 w-4" />
             Add {def.singular.toLowerCase()}
           </button>
+          )}
         </div>
       </div>
 
@@ -225,7 +237,7 @@ export function EntityManager({ def, password }: { def: EntityDef; password: str
                       key={c.key}
                       className={`px-4 py-3 text-slate-700 ${c.key === def.titleKey ? 'font-medium text-slate-900 min-w-[220px]' : 'whitespace-nowrap'}`}
                     >
-                      {formatCell(c, r[c.key])}
+                      {formatCell(c, r[c.key], r)}
                     </td>
                   ))}
                   <td className="px-4 py-3 text-right whitespace-nowrap">
@@ -279,7 +291,13 @@ export function EntityManager({ def, password }: { def: EntityDef; password: str
               </button>
             </div>
             <div className="flex-1 overflow-y-auto px-6 py-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {def.fields.map((f) => (
+              {def.fields.map((f) =>
+                f.type === 'file' ? (
+                  <div key={f.key}>
+                    <span className="mb-1 block text-xs font-medium text-slate-600">{f.label}</span>
+                    <div className="py-2 text-sm">{editing !== 'new' && formatCell(f, editing[f.key], editing)}</div>
+                  </div>
+                ) : (
                 <label key={f.key} className={`block ${f.type === 'textarea' || f.key === def.titleKey ? 'sm:col-span-2' : ''}`}>
                   <span className="mb-1 block text-xs font-medium text-slate-600">
                     {f.label}
@@ -287,7 +305,8 @@ export function EntityManager({ def, password }: { def: EntityDef; password: str
                   </span>
                   <FieldInput f={f} value={form[f.key]} onChange={(v) => setForm((s) => ({ ...s, [f.key]: v }))} />
                 </label>
-              ))}
+                )
+              )}
             </div>
             <div className="border-t border-slate-200 px-6 py-4">
               {formError && <p className="mb-3 text-sm text-red-600">{formError}</p>}

@@ -4,6 +4,12 @@ import { pipeline } from "@/data/platform";
 
 const HERO_VIDEO_URL = "/assets/hero/hero-bg.mp4";
 
+const secondary = [
+  { label: "Manufacture with us", href: "/manufacture-with-us" },
+  { label: "Explore opportunities", href: "/opportunities" },
+  { label: "Register as Vendor", href: "/register" },
+];
+
 export function Hero() {
   return (
     <section className="relative overflow-hidden bg-slate-950 pt-28 md:pt-36 pb-16 md:pb-24">
@@ -42,25 +48,23 @@ export function Hero() {
           </p>
 
           <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3">
-            <Link
-              href="/opportunities"
-              className="group inline-flex items-center justify-center gap-2 rounded-md bg-blue-600 px-7 py-4 text-base font-semibold text-white hover:bg-blue-500 transition"
-            >
-              Explore opportunities
-              <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-            <Link
-              href="/register"
-              className="inline-flex items-center justify-center rounded-md border border-white/30 px-7 py-4 text-base font-semibold text-white hover:bg-white hover:text-slate-900 transition"
-            >
-              Register as Vendor
-            </Link>
+            {/* Primary action */}
             <Link
               href="/machine-server"
-              className="inline-flex items-center justify-center rounded-md border border-white/30 px-7 py-4 text-base font-semibold text-white hover:bg-white hover:text-slate-900 transition"
+              className="group inline-flex items-center justify-center gap-2 rounded-md bg-blue-600 px-7 py-4 text-base font-semibold text-white hover:bg-blue-500 transition"
             >
               Machining Capacity
+              <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Link>
+            {secondary.map((b) => (
+              <Link
+                key={b.href}
+                href={b.href}
+                className="inline-flex items-center justify-center rounded-md border border-white/30 px-7 py-4 text-base font-semibold text-white hover:bg-white hover:text-slate-900 transition"
+              >
+                {b.label}
+              </Link>
+            ))}
           </div>
         </div>
 

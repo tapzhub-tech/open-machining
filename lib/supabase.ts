@@ -202,7 +202,7 @@ export async function getMachineServerStats(client?: SupabaseClient | null): Pro
     // so we select only the guaranteed base columns plus the extended ones and
     // handle missing-column errors below.
     const [vendorsRes, machinesRes] = await Promise.all([
-      c.from('vendors').select('id, company_name, address, number_of_skill, number_of_programmer, state, number_of_machines, industries'),
+      c.from('vendors').select('id, number_of_skill, number_of_programmer, state, number_of_machines, industries'),
       c.from('machines').select('machine_type, vendor_id'),
     ]);
 
@@ -211,7 +211,7 @@ export async function getMachineServerStats(client?: SupabaseClient | null): Pro
     let vendors: any[] = [];
     if (vendorsRes.error) {
       console.warn('Extended vendor columns missing, retrying with base columns:', vendorsRes.error.message);
-      const fallbackRes = await c.from('vendors').select('id, company_name, address, number_of_skill, number_of_programmer');
+      const fallbackRes = await c.from('vendors').select('id, number_of_skill, number_of_programmer');
       if (fallbackRes.error) {
         console.error('Error fetching vendors (base):', fallbackRes.error);
         throw fallbackRes.error;
@@ -271,10 +271,11 @@ export async function getMachineServerStats(client?: SupabaseClient | null): Pro
       stateMap.set(state, (stateMap.get(state) || 0) + 1);
     });
 
-    const vendorDetails = vendors.map(vendor => ({
-      id: vendor.id,
-      name: vendor.company_name,
-      location: vendor.address,
+    // Public data: vendor identities are masked and only the state is exposed.
+    const vendorDetails = vendors.map((vendor, i) => ({
+      id: `V${String(i + 1).padStart(3, '0')}`,
+      name: '*****',
+      location: (vendor.state || '').trim() || undefined,
       machines: vendor.number_of_machines || 0,
       staff: vendor.number_of_skill || 0,
       programmers: vendor.number_of_programmer || 0,

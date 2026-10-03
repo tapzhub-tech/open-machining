@@ -151,7 +151,7 @@ export default function AdminPage() {
             </div>
             <div className="text-center">
               <h1 className="text-2xl sm:text-3xl font-semibold text-white">Admin Access</h1>
-              <p className="text-sm text-slate-300 mt-1">Manage vendors and tenders.</p>
+              <p className="text-sm text-slate-300 mt-1">Manage vendors, tenders and RFQs.</p>
             </div>
           </div>
 
