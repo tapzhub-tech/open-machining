@@ -184,11 +184,9 @@ export interface MachineServerStats {
   vendorDetails: Array<{
     id: string;
     name: string;
-    location?: string;
     machines: number;
     staff: number;
     programmers: number;
-    industries: string[];
   }>;
 }
 
@@ -271,15 +269,13 @@ export async function getMachineServerStats(client?: SupabaseClient | null): Pro
       stateMap.set(state, (stateMap.get(state) || 0) + 1);
     });
 
-    // Public data: vendor identities are masked and only the state is exposed.
+    // Public data: vendor identities are masked; only capacity counts are exposed.
     const vendorDetails = vendors.map((vendor, i) => ({
       id: `V${String(i + 1).padStart(3, '0')}`,
       name: '*****',
-      location: (vendor.state || '').trim() || undefined,
       machines: vendor.number_of_machines || 0,
       staff: vendor.number_of_skill || 0,
       programmers: vendor.number_of_programmer || 0,
-      industries: vendor.industries || [],
     }));
 
     return {
