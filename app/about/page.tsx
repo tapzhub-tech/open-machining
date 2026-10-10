@@ -1,211 +1,87 @@
 // app/about/page.tsx
 import Link from 'next/link';
-import { Award, Users, Target, Zap } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Navbar } from '@/components/navbar'; // ✅ Navbar import
+import { MapPin } from 'lucide-react';
+import { Navbar } from '@/components/navbar';
+import { PageHeader, SectionHeading } from '@/components/home-sections';
+import { pipeline } from '@/data/platform';
+import { company } from '@/data/company';
 
 export const metadata = {
-  title: 'About Us - Open Manufacturing',
+  title: 'About Us | Open Machining',
   description:
-    'Learn about our mission, values, and commitment to manufacturing excellence.',
+    'Open Machining connects manufacturing opportunities, bid management and India’s manufacturing capacity — from opportunity to delivery.',
 };
 
 export default function AboutPage() {
   return (
     <>
-      {/* ✅ Navbar */}
       <Navbar />
+      <main className="bg-white">
+        <PageHeader
+          eyebrow="About us"
+          title="From opportunity to delivery."
+          body="Open Machining brings procurement, engineering and India's manufacturing capacity together in one platform."
+        />
 
-      <div className="min-h-screen bg-white">
-        {/* ✅ Hero Section with extra top padding */}
-        <div className="relative overflow-hidden">
-          <div className="bg-gradient-to-br from-slate-900 via-indigo-800 to-sky-600 text-white pt-28 md:pt-32 pb-16 md:pb-20">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
-              {/* background glow effects */}
-              <div className="absolute -top-20 -left-20 w-56 h-56 bg-blue-400/20 blur-3xl rounded-full" />
-              <div className="absolute -bottom-20 -right-20 w-56 h-56 bg-indigo-500/20 blur-3xl rounded-full" />
-
-              <h1 className="text-4xl md:text-5xl font-bold mb-4">
-                About Open Manufacturing
-              </h1>
-              <p className="text-lg md:text-xl text-slate-200 max-w-3xl mx-auto">
-                A trusted partner in precision manufacturing, delivering quality
-                parts and exceptional service since 2005.
+        <section className="py-16 md:py-24">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12">
+            <div className="lg:col-span-5">
+              <SectionHeading eyebrow="What we do" title="One accountable partner, from tender to delivered part." />
+            </div>
+            <div className="lg:col-span-7 space-y-5 text-lg text-slate-600 leading-relaxed">
+              <p>
+                We identify manufacturing opportunities across government, PSU, defence and private buyers, and match
+                them to the capabilities of our network of manufacturers.
+              </p>
+              <p>
+                For contract holders, we analyse tenders, cost the manufacturing with real supplier quotations and
+                prepare the bid. For buyers and OEMs, we take drawings from prototype to production across machining,
+                fabrication, moulding, additive and assembly.
+              </p>
+              <p>
+                For manufacturers, we bring matched orders — so they can spend their time making parts instead of
+                hunting for customers. Every order is engineered, sourced and inspected through to delivery.
               </p>
             </div>
           </div>
-        </div>
+        </section>
 
-        {/* About Content */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-20 items-center">
-            <div>
-              <h2 className="text-3xl font-semibold text-slate-900 mb-6">
-                Our Story
-              </h2>
-              <div className="space-y-4 text-slate-600 leading-relaxed">
-                <p>
-                  Founded in 2005, Open Manufacturing began as a small machine
-                  shop with a vision to revolutionize the manufacturing industry
-                  through advanced technology and unwavering commitment to
-                  quality. Over the years, we have grown into a full-service
-                  manufacturing partner serving industries from aerospace to
-                  consumer products.
-                </p>
-                <p>
-                  Today, we operate a 50,000 square foot facility equipped with
-                  the latest CNC machinery, injection molding equipment, and
-                  additive manufacturing technology. Our team of experienced
-                  engineers and machinists work collaboratively to turn your
-                  designs into reality.
-                </p>
-                <p>
-                  What sets us apart is our dedication to customer success. We
-                  do not just manufacture parts — we partner with you to
-                  optimize designs, reduce costs, and accelerate time to market.
-                  Every project receives the same attention to detail, whether
-                  it is a prototype or a production run of thousands.
-                </p>
-              </div>
-            </div>
-
-            <div className="relative">
-              <div
-                className="aspect-[4/3] rounded-xl overflow-hidden shadow-lg ring-1 ring-slate-100"
-                style={{
-                  backgroundImage:
-                    'url(https://images.pexels.com/photos/1595385/pexels-photo-1595385.jpeg?auto=compress&cs=tinysrgb&w=1600)',
-                  backgroundSize: 'cover',
-                  backgroundPosition: 'center',
-                }}
-              />
-              {/* Subtle overlay badge */}
-              <div className="absolute -top-4 -left-4 bg-white/80 backdrop-blur px-4 py-2 rounded-lg shadow-sm border border-slate-100">
-                <div className="text-xs text-slate-700 font-medium">
-                  Precision Facility
-                </div>
-                <div className="text-sm text-slate-900 font-semibold">
-                  50,000 sq ft
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Mission */}
-          <div className="mb-20 text-center">
-            <h2 className="text-3xl font-semibold text-slate-900 mb-4">
-              Our Mission
-            </h2>
-            <p className="text-lg text-slate-600 max-w-3xl mx-auto">
-              To empower innovators and manufacturers with precision parts, fast
-              turnaround times, and exceptional service — enabling them to bring
-              their products to market faster and more efficiently.
-            </p>
-          </div>
-
-          {/* Values */}
-          <div className="mb-20">
-            <h2 className="text-3xl font-semibold text-slate-900 mb-8 text-center">
-              Our Values
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {[
-                {
-                  Icon: Award,
-                  title: 'Quality First',
-                  desc: 'Uncompromising quality standards in every part we manufacture.',
-                },
-                {
-                  Icon: Users,
-                  title: 'Customer Focus',
-                  desc: 'Your success is our success. We are committed to your satisfaction.',
-                },
-                {
-                  Icon: Zap,
-                  title: 'Innovation',
-                  desc: 'Investing in cutting-edge technology and continuous improvement.',
-                },
-                {
-                  Icon: Target,
-                  title: 'Reliability',
-                  desc: 'On-time delivery and consistent quality you can count on.',
-                },
-              ].map(({ Icon, title, desc }) => (
-                <Card key={title} className="border-0 shadow-sm">
-                  <CardContent className="pt-6 text-center">
-                    <div className="inline-flex items-center justify-center p-3 rounded-full bg-gradient-to-br from-sky-50 to-indigo-50 mb-4 ring-1 ring-slate-100">
-                      <Icon className="h-7 w-7 text-sky-600" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-slate-900 mb-1">
-                      {title}
-                    </h3>
-                    <p className="text-slate-600 text-sm">{desc}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-
-          {/* Stats */}
-          <div className="bg-slate-50 rounded-2xl p-8 md:p-12 mb-12 shadow-sm ring-1 ring-slate-100">
-            <h2 className="text-3xl font-semibold text-slate-900 mb-8 text-center">
-              By the Numbers
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-              {[
-                ['18+', 'Years Experience'],
-                ['5000+', 'Projects Completed'],
-                ['300+', 'Active Clients'],
-                ['99.8%', 'Quality Rate'],
-              ].map(([num, label]) => (
-                <div key={num} className="text-center">
-                  <div className="text-4xl md:text-5xl font-bold text-slate-900 mb-2">
-                    {num}
+        <section className="pb-16 md:pb-24">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <ol className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {pipeline.map((stage) => (
+                <li key={stage.id} className="rounded-xl border border-slate-200 p-6">
+                  <div className="flex items-baseline justify-between mb-2">
+                    <span className="text-xl font-bold text-slate-900">{stage.title}</span>
+                    <span className="font-mono text-xs text-slate-400">{stage.step}</span>
                   </div>
-                  <div className="text-slate-600">{label}</div>
-                </div>
+                  <p className="text-sm text-slate-600">{stage.tagline}</p>
+                </li>
               ))}
-            </div>
+            </ol>
           </div>
+        </section>
 
-          {/* CTA Section */}
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-50 via-white to-sky-50 border border-slate-200 shadow-lg p-8 md:p-12 text-center">
-            <div className="absolute -top-10 -left-10 w-40 h-40 bg-sky-300/20 blur-3xl rounded-full" />
-            <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-indigo-400/20 blur-3xl rounded-full" />
-
-            <div className="relative z-10 max-w-3xl mx-auto">
-              <h3 className="text-2xl md:text-3xl font-semibold text-slate-900 mb-3">
-                Work with Open Manufacturing
-              </h3>
-              <p className="text-slate-600 mb-6">
-                Looking for a manufacturing partner who values quality, speed,
-                and clear communication? Let’s talk — we’ll help you choose the
-                right process and get your parts into production.
-              </p>
-
-              <div className="flex items-center justify-center gap-4">
-                <Link href="/contact">
-                  <Button
-                    size="lg"
-                    className="relative overflow-hidden group text-white font-medium bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-indigo-600 hover:to-sky-500 transition-all duration-300 px-6 py-3 rounded-xl shadow-lg"
-                  >
-                    <span className="relative z-10 flex items-center">
-                      Contact Our Team
-                    </span>
-                  </Button>
-                </Link>
-                <a
-                  href="mailto:hello@OpenManufacturing.com"
-                  className="inline-flex items-center justify-center px-5 py-3 rounded-lg border border-slate-200 text-slate-700 text-sm hover:bg-slate-100 transition"
-                >
-                  hello@OpenManufacturing.com
-                </a>
+        <section className="bg-slate-50 py-14 md:py-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
+            <div className="flex items-start gap-3">
+              <MapPin className="h-6 w-6 mt-1 flex-shrink-0 text-blue-600" />
+              <div>
+                <p className="font-semibold text-slate-900 mb-1">{company.name}</p>
+                {company.addressLines.map((line) => (
+                  <p key={line} className="text-slate-600">{line}</p>
+                ))}
               </div>
             </div>
+            <Link
+              href="/contact"
+              className="inline-flex items-center justify-center rounded-md bg-blue-600 px-7 py-4 font-semibold text-white hover:bg-blue-700 transition"
+            >
+              Contact Us
+            </Link>
           </div>
-        </div>
-      </div>
+        </section>
+      </main>
     </>
   );
 }

@@ -78,7 +78,16 @@ function FieldInput({
   }
 }
 
-export function EntityManager({ def, password }: { def: EntityDef; password: string }) {
+export function EntityManager({
+  def,
+  password,
+  toolbar,
+}: {
+  def: EntityDef;
+  password: string;
+  /** Extra buttons for this table; receives a reload callback */
+  toolbar?: (reload: () => Promise<void>) => React.ReactNode;
+}) {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -115,6 +124,16 @@ export function EntityManager({ def, password }: { def: EntityDef; password: str
   }, [load]);
 
   const columns = def.fields.filter((f) => f.column);
+
+  const summary = useMemo(() => {
+    if (!def.summaryKey) return [];
+    const counts = new Map<string, number>();
+    for (const r of rows) {
+      const k = String(r[def.summaryKey] ?? '').trim() || 'Not set';
+      counts.set(k, (counts.get(k) ?? 0) + 1);
+    }
+    return Array.from(counts.entries()).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  }, [rows, def]);
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return rows;
@@ -176,6 +195,19 @@ export function EntityManager({ def, password }: { def: EntityDef; password: str
 
   return (
     <div>
+      <dl className="mb-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
+          <dt className="text-xs font-semibold uppercase tracking-wider text-blue-700">Total {def.label}</dt>
+          <dd className="mt-1 text-3xl font-bold tabular-nums text-slate-900">{loading && !rows.length ? '…' : rows.length}</dd>
+        </div>
+        {summary.map(([k, n]) => (
+          <div key={k} className="rounded-xl border border-slate-200 bg-white p-4">
+            <dt className="truncate text-xs font-semibold uppercase tracking-wider text-slate-500" title={k}>{k}</dt>
+            <dd className="mt-1 text-3xl font-bold tabular-nums text-slate-900">{n}</dd>
+          </div>
+        ))}
+      </dl>
+
       <div className="mb-4 flex flex-col sm:flex-row sm:items-center gap-3">
         <div className="relative flex-1 max-w-md">
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
@@ -186,7 +218,8 @@ export function EntityManager({ def, password }: { def: EntityDef; password: str
             onChange={(e) => setQuery(e.target.value)}
           />
         </div>
-        <div className="flex gap-2 sm:ml-auto">
+        <div className="flex flex-wrap gap-2 sm:ml-auto">
+          {toolbar?.(load)}
           <button
             onClick={load}
             className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"

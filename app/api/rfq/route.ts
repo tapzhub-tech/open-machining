@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
+import { company } from '@/data/company';
 import { RFQ_BUCKET, type RfqForm, requiredRfqFields, rfqOptions } from '@/lib/rfq';
 
 const PATH_RE = /^pending\/[0-9a-f-]{36}\/(drawing|cad)\.[a-z]+$/;
@@ -25,7 +26,7 @@ async function notifyTeam(row: Record<string, any>) {
   if (!key || !key.startsWith('SG.')) return;
   const fromEmail = process.env.FROM_EMAIL || 'no-reply@yourdomain.com';
   const fromName = process.env.FROM_NAME || 'Open Machining';
-  const to = process.env.SUPPORT_EMAIL || fromEmail;
+  const to = process.env.SUPPORT_EMAIL || company.email;
   const lines = [
     `Company: ${row.company}`,
     `Contact: ${row.contact_name} <${row.email}>${row.phone ? ` · ${row.phone}` : ''}`,

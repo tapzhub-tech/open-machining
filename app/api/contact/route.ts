@@ -2,6 +2,7 @@
 export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
+import { company as companyInfo } from '@/data/company';
 
 type ContactPayload = {
   name: string;
@@ -39,7 +40,7 @@ export async function POST(request: NextRequest) {
     const sendgridKey = process.env.SENDGRID_API_KEY;
     const fromEmail = process.env.FROM_EMAIL || 'no-reply@yourdomain.com';
     const fromName = process.env.FROM_NAME || 'OpenManufacturing';
-    const supportEmail = process.env.SUPPORT_EMAIL || fromEmail;
+    const supportEmail = process.env.SUPPORT_EMAIL || companyInfo.email;
 
     const keyLooksOk =
       typeof sendgridKey === 'string' &&

@@ -17,7 +17,7 @@ export interface FieldDef {
   column?: boolean;
 }
 
-export type EntityKey = 'vendors' | 'tenders' | 'rfqs';
+export type EntityKey = 'rfqs' | 'vendors' | 'tenders';
 
 export interface EntityDef {
   table: EntityKey;
@@ -27,62 +27,19 @@ export interface EntityDef {
   orderBy: string;
   /** false hides "Add" (rows only come from a public form) */
   canCreate?: boolean;
+  /** Field whose values are counted in the dashboard summary strip */
+  summaryKey?: string;
   fields: FieldDef[];
 }
 
 export const entities: Record<EntityKey, EntityDef> = {
-  vendors: {
-    table: 'vendors',
-    label: 'Vendors',
-    singular: 'Vendor',
-    titleKey: 'company_name',
-    orderBy: 'created_at',
-    fields: [
-      { key: 'company_name', label: 'Company name', type: 'text', required: true, column: true },
-      { key: 'owner_name', label: 'Owner name', type: 'text', required: true, column: true },
-      { key: 'phone_number', label: 'Phone', type: 'text', column: true },
-      { key: 'email', label: 'Email', type: 'text' },
-      { key: 'gst_no', label: 'GST no.', type: 'text', required: true },
-      { key: 'pancard_number', label: 'PAN', type: 'text', required: true },
-      { key: 'address', label: 'Address', type: 'textarea', required: true },
-      { key: 'city', label: 'City', type: 'text', column: true },
-      { key: 'state', label: 'State', type: 'text', column: true },
-      { key: 'pincode', label: 'Pincode', type: 'text' },
-      { key: 'industries', label: 'Industries', type: 'list' },
-      { key: 'number_of_machines', label: 'Machines', type: 'number', column: true },
-      { key: 'number_of_skill', label: 'Technical staff', type: 'number' },
-      { key: 'number_of_programmer', label: 'Programmers', type: 'number' },
-      { key: 'number_of_quality_tools', label: 'Quality tools', type: 'number' },
-    ],
-  },
-  tenders: {
-    table: 'tenders',
-    label: 'Tenders',
-    singular: 'Tender',
-    titleKey: 'title',
-    orderBy: 'closes_on',
-    fields: [
-      { key: 'title', label: 'Title', type: 'text', required: true, column: true },
-      { key: 'reference_no', label: 'Reference no.', type: 'text' },
-      { key: 'buyer', label: 'Buyer', type: 'text', required: true, column: true },
-      { key: 'sector', label: 'Sector', type: 'select', required: true, options: ['Government', 'PSU', 'Defence', 'Private'], column: true },
-      { key: 'processes', label: 'Processes', type: 'list' },
-      { key: 'value', label: 'Estimated value (₹)', type: 'number', column: true },
-      { key: 'location', label: 'Location', type: 'text' },
-      { key: 'closes_on', label: 'Closes on', type: 'date', column: true },
-      { key: 'status', label: 'Status', type: 'select', options: ['Open', 'Bidding', 'Submitted', 'Awarded', 'Lost', 'Closed'], column: true },
-      { key: 'matched', label: 'Network match', type: 'boolean' },
-      { key: 'source_url', label: 'Source URL', type: 'url' },
-      { key: 'notes', label: 'Notes', type: 'textarea' },
-    ],
-  },
   rfqs: {
     table: 'rfqs',
     label: 'RFQs',
     singular: 'RFQ',
     titleKey: 'part_name',
     orderBy: 'created_at',
-    canCreate: false,
+    summaryKey: 'status',
     fields: [
       { key: 'status', label: 'Status', type: 'select', options: ['New', 'Reviewing', 'Quoted', 'Won', 'Lost', 'Closed'], column: true },
       { key: 'part_name', label: 'Part name', type: 'text', required: true, column: true },
@@ -111,6 +68,54 @@ export const entities: Record<EntityKey, EntityDef> = {
       { key: 'notes', label: 'Special instructions', type: 'textarea' },
       { key: 'drawing_path', label: 'Drawing', type: 'file', column: true },
       { key: 'cad_path', label: 'CAD file', type: 'file' },
+    ],
+  },
+  vendors: {
+    table: 'vendors',
+    label: 'Vendors',
+    singular: 'Vendor',
+    titleKey: 'company_name',
+    orderBy: 'created_at',
+    summaryKey: 'state',
+    fields: [
+      { key: 'company_name', label: 'Company name', type: 'text', required: true, column: true },
+      { key: 'owner_name', label: 'Owner name', type: 'text', required: true, column: true },
+      { key: 'phone_number', label: 'Phone', type: 'text', column: true },
+      { key: 'email', label: 'Email', type: 'text' },
+      { key: 'gst_no', label: 'GST no.', type: 'text', required: true },
+      { key: 'pancard_number', label: 'PAN', type: 'text', required: true },
+      { key: 'address', label: 'Address', type: 'textarea', required: true },
+      { key: 'city', label: 'City', type: 'text', column: true },
+      { key: 'state', label: 'State', type: 'text', column: true },
+      { key: 'pincode', label: 'Pincode', type: 'text' },
+      { key: 'industries', label: 'Industries', type: 'list' },
+      { key: 'number_of_machines', label: 'Machines', type: 'number', column: true },
+      { key: 'number_of_skill', label: 'Technical staff', type: 'number' },
+      { key: 'number_of_programmer', label: 'Programmers', type: 'number' },
+      { key: 'number_of_quality_tools', label: 'Quality tools', type: 'number' },
+    ],
+  },
+  tenders: {
+    table: 'tenders',
+    label: 'Tenders',
+    singular: 'Tender',
+    titleKey: 'title',
+    orderBy: 'closes_on',
+    summaryKey: 'source',
+    fields: [
+      { key: 'title', label: 'Title', type: 'text', required: true, column: true },
+      { key: 'source', label: 'Source', type: 'select', options: ['Manual', 'GeM'], column: true },
+      { key: 'reference_no', label: 'Reference / bid no.', type: 'text', column: true },
+      { key: 'buyer', label: 'Buyer', type: 'text', required: true, column: true },
+      { key: 'sector', label: 'Sector', type: 'select', required: true, options: ['Government', 'PSU', 'Defence', 'Private'], column: true },
+      { key: 'processes', label: 'Processes', type: 'list' },
+      { key: 'value', label: 'Estimated value (₹)', type: 'number', column: true },
+      { key: 'location', label: 'Location', type: 'text' },
+      { key: 'closes_on', label: 'Closes on', type: 'date', column: true },
+      { key: 'status', label: 'Status', type: 'select', options: ['Open', 'Bidding', 'Submitted', 'Awarded', 'Lost', 'Closed'], column: true },
+      { key: 'matched', label: 'Network match', type: 'boolean' },
+      { key: 'source_url', label: 'Source URL', type: 'url' },
+      { key: 'notes', label: 'Notes', type: 'textarea' },
     ],
   },
 };
@@ -163,6 +168,11 @@ export function sanitizePayload(
       }
     }
     data[f.key] = val;
+  }
+
+  // On create, leave empty optional fields unset so database defaults apply.
+  if (mode === 'create') {
+    for (const k of Object.keys(data)) if (data[k] === null) delete data[k];
   }
 
   for (const f of def.fields) {

@@ -4,11 +4,8 @@ import { pipeline } from "@/data/platform";
 
 const HERO_VIDEO_URL = "/assets/hero/hero-bg.mp4";
 
-const secondary = [
-  { label: "Manufacture with us", href: "/manufacture-with-us" },
-  { label: "Explore opportunities", href: "/opportunities" },
-  { label: "Register as Vendor", href: "/register" },
-];
+const outlineBtn =
+  "inline-flex items-center justify-center rounded-md border border-white/30 px-7 py-4 text-base font-semibold text-white hover:bg-white hover:text-slate-900 transition";
 
 export function Hero() {
   return (
@@ -47,8 +44,14 @@ export function Hero() {
             manufacturing capacity together in one platform.
           </p>
 
-          <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3">
-            {/* Primary action */}
+          {/* Row 1: Manufacture with us · Register as Vendor — Row 2: Machining Capacity · Explore opportunities */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:max-w-xl">
+            <Link href="/manufacture-with-us" className={outlineBtn}>
+              Manufacture with us
+            </Link>
+            <Link href="/register" className={outlineBtn}>
+              Register as Vendor
+            </Link>
             <Link
               href="/machine-server"
               className="group inline-flex items-center justify-center gap-2 rounded-md bg-blue-600 px-7 py-4 text-base font-semibold text-white hover:bg-blue-500 transition"
@@ -56,15 +59,9 @@ export function Hero() {
               Machining Capacity
               <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Link>
-            {secondary.map((b) => (
-              <Link
-                key={b.href}
-                href={b.href}
-                className="inline-flex items-center justify-center rounded-md border border-white/30 px-7 py-4 text-base font-semibold text-white hover:bg-white hover:text-slate-900 transition"
-              >
-                {b.label}
-              </Link>
-            ))}
+            <Link href="/opportunities" className={outlineBtn}>
+              Explore opportunities
+            </Link>
           </div>
         </div>
 

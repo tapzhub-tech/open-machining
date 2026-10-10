@@ -80,7 +80,7 @@ function OpportunityRow({ o }: { o: Opportunity }) {
           </span>
         ))}
       </div>
-      <div className="md:col-span-1 font-semibold text-slate-900 tabular-nums">{formatINR(o.value)}</div>
+      <div className="md:col-span-1 font-semibold text-slate-900 tabular-nums">{o.value > 0 ? formatINR(o.value) : <span className="text-slate-300">—</span>}</div>
       <div className="md:col-span-2 md:text-right text-sm tabular-nums">
         {Number.isNaN(days) ? (
           <span className="text-slate-400">No deadline</span>

@@ -14,6 +14,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Navbar } from '@/components/navbar'; // <-- added navbar
+import { company } from '@/data/company';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -139,7 +140,7 @@ export default function ContactPage() {
                           type="tel"
                           value={formData.phone}
                           onChange={handleChange}
-                          placeholder="(555) 123-4567"
+                          placeholder="91-XXXXXXXXXX"
                           className="w-full bg-white/90"
                         />
                       </div>
@@ -206,8 +207,8 @@ export default function ContactPage() {
 
                       <div className="mt-3 md:mt-0 text-sm text-slate-600">
                         Or email us directly at{' '}
-                        <a href="mailto:info@precisionmfg.com" className="text-slate-900 font-medium hover:underline">
-                          info@OpenManufacturing.com
+                        <a href={`mailto:${company.email}`} className="text-slate-900 font-medium hover:underline">
+                          {company.email}
                         </a>
                       </div>
                     </div>
@@ -229,9 +230,9 @@ export default function ContactPage() {
                     <div>
                       <div className="font-medium text-slate-900">Address</div>
                       <div className="text-sm text-slate-600 mt-1">
-                        123 Industrial Parkway<br />
-                        Manufacturing District<br />
-                        Boston, MA 02101
+                        {company.addressLines.map((line) => (
+                          <span key={line} className="block">{line}</span>
+                        ))}
                       </div>
                     </div>
                   </div>
@@ -240,7 +241,7 @@ export default function ContactPage() {
                     <Phone className="h-5 w-5 text-sky-600 mt-0.5 flex-shrink-0" />
                     <div>
                       <div className="font-medium text-slate-900">Phone</div>
-                      <div className="text-sm text-slate-600 mt-1">(555) 123-4567</div>
+                      <a href={company.phoneHref} className="block text-sm text-slate-600 mt-1 hover:underline">{company.phone}</a>
                     </div>
                   </div>
 
@@ -248,7 +249,7 @@ export default function ContactPage() {
                     <Mail className="h-5 w-5 text-sky-600 mt-0.5 flex-shrink-0" />
                     <div>
                       <div className="font-medium text-slate-900">Email</div>
-                      <div className="text-sm text-slate-600 mt-1">info@OpenManufacturing.com</div>
+                      <a href={`mailto:${company.email}`} className="block text-sm text-slate-600 mt-1 hover:underline">{company.email}</a>
                     </div>
                   </div>
                 </CardContent>
@@ -283,7 +284,7 @@ export default function ContactPage() {
                     <div className="text-center text-slate-600 px-6">
                       <MapPin className="h-12 w-12 mx-auto mb-3 text-sky-600" />
                       <div className="text-sm font-medium">Our Facility</div>
-                      <div className="text-xs text-slate-500 mt-1">Boston, MA</div>
+                      <div className="text-xs text-slate-500 mt-1">{company.city}</div>
                     </div>
                   </div>
                 </CardContent>

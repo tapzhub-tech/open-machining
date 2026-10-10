@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, KeyboardEvent } from "react";
-import { Lock, Download, ShieldCheck, Loader2, LogOut } from "lucide-react";
+import { Lock, Download, ShieldCheck, Loader2, LogOut, CloudDownload } from "lucide-react";
 import { EntityManager } from "@/components/admin/entity-manager";
 import { entities } from "@/lib/admin-entities";
 
@@ -13,7 +13,28 @@ export default function AdminPage() {
   const [isExporting, setIsExporting] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [tab, setTab] = useState<Tab>("vendors");
+  const [tab, setTab] = useState<Tab>("rfqs");
+  const [gemBusy, setGemBusy] = useState(false);
+  const [gemMessage, setGemMessage] = useState<{ ok: boolean; text: string } | null>(null);
+
+  const refreshFromGem = async (reload: () => Promise<void>) => {
+    setGemBusy(true);
+    setGemMessage(null);
+    try {
+      const res = await fetch("/api/admin/gem-sync", { method: "POST", headers: authHeaders(password.trim()) });
+      const json = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(json?.error || `GeM refresh failed (${res.status})`);
+      setGemMessage({
+        ok: true,
+        text: `GeM (${json.ministry}): ${json.inserted} new tender${json.inserted === 1 ? "" : "s"} added, ${json.alreadyPresent} already present. Read ${json.fetched} matching bids from ${json.pagesRead} page${json.pagesRead === 1 ? "" : "s"} (${json.totalOnGem} reported by GeM).`,
+      });
+      await reload();
+    } catch (err: any) {
+      setGemMessage({ ok: false, text: err.message || "GeM refresh failed" });
+    } finally {
+      setGemBusy(false);
+    }
+  };
 
   // Password is sent in the Authorization header — never in the URL.
   const authHeaders = (pwd: string) => ({
@@ -134,7 +155,35 @@ export default function AdminPage() {
           {error && (
             <p className="mb-4 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
           )}
-          <EntityManager key={tab} def={entities[tab]} password={password.trim()} />
+          {tab === "tenders" && gemMessage && (
+            <p
+              className={`mb-4 rounded-md border px-4 py-3 text-sm ${
+                gemMessage.ok ? "border-emerald-200 bg-emerald-50 text-emerald-800" : "border-red-200 bg-red-50 text-red-700"
+              }`}
+            >
+              {gemMessage.text}
+            </p>
+          )}
+          <EntityManager
+            key={tab}
+            def={entities[tab]}
+            password={password.trim()}
+            toolbar={
+              tab === "tenders"
+                ? (reload) => (
+                    <button
+                      onClick={() => refreshFromGem(reload)}
+                      disabled={gemBusy}
+                      title="Import Ministry of Defence bids from bidplus.gem.gov.in"
+                      className="inline-flex items-center gap-2 rounded-md bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-70"
+                    >
+                      {gemBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <CloudDownload className="h-4 w-4" />}
+                      {gemBusy ? "Fetching from GeM…" : "Refresh from GeM"}
+                    </button>
+                  )
+                : undefined
+            }
+          />
         </main>
       </div>
     );

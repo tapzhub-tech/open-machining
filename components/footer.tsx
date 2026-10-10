@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { Mail, MapPin, Phone } from 'lucide-react';
+import { company } from '@/data/company';
 
 const columns = [
   {
@@ -47,6 +49,24 @@ export function Footer() {
               We identify manufacturing opportunities, build the supply capability behind them, and manage
               execution from bid to delivery.
             </p>
+            <ul className="mt-6 space-y-2.5 text-sm">
+              <li className="flex items-start gap-2.5">
+                <MapPin className="h-4 w-4 mt-0.5 flex-shrink-0 text-slate-500" />
+                <span>
+                  {company.addressLines.map((line) => (
+                    <span key={line} className="block">{line}</span>
+                  ))}
+                </span>
+              </li>
+              <li className="flex items-center gap-2.5">
+                <Phone className="h-4 w-4 flex-shrink-0 text-slate-500" />
+                <a href={company.phoneHref} className="hover:text-white">{company.phone}</a>
+              </li>
+              <li className="flex items-center gap-2.5">
+                <Mail className="h-4 w-4 flex-shrink-0 text-slate-500" />
+                <a href={`mailto:${company.email}`} className="hover:text-white">{company.email}</a>
+              </li>
+            </ul>
           </div>
 
           {columns.map((col) => (
